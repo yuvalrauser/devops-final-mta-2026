@@ -1,0 +1,34 @@
+// Jenkinsfile-gatling-load
+pipeline {
+    agent any
+    options {
+        timestamps()
+        timeout(time: 12, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    environment {
+        GATLING_HOME = 'C:\\DevOps\\gatling-charts-highcharts-bundle-3.10.4-bundle\\gatling-charts-highcharts-bundle-3.10.4'
+        SIM_DIR      = 'C:\\DevOps\\FinalProject\\gatling'
+    }
+    stages {
+        stage('Run Gatling load (100 RPS / 5 min)') {
+            steps {
+                bat """
+                  @echo on
+                  if exist gatling-results rmdir /S /Q gatling-results
+                  mkdir gatling-results
+                  "%GATLING_HOME%\\bin\\gatling.bat" ^
+                    -sf "%SIM_DIR%" ^
+                    -s BmiLoadSimulation ^
+                    -rf "%WORKSPACE%\\gatling-results" ^
+                    -rd "Load: constant 100 RPS for 5 minutes (localhost)"
+                """
+            }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'gatling-results/**', allowEmptyArchive: true
+        }
+    }
+}

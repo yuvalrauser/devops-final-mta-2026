@@ -1,0 +1,49 @@
+// Jenkinsfile-gatling-maxlimit — runs the Gatling max-limit ramp simulation.
+//
+// Triggered manually for the defense. Archives the Gatling HTML report so the
+// reviewer can browse it from the Jenkins build page.
+
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        timeout(time: 10, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    environment {
+        GATLING_HOME = 'C:\\DevOps\\gatling-charts-highcharts-bundle-3.10.4-bundle\\gatling-charts-highcharts-bundle-3.10.4'
+        SIM_DIR      = 'C:\\DevOps\\FinalProject\\gatling'
+        SIM_CLASS    = 'BmiMaxLimitSimulation'
+    }
+
+    stages {
+        stage('Run Gatling max-limit ramp') {
+            steps {
+                bat """
+                  @echo on
+                  if exist gatling-results rmdir /S /Q gatling-results
+                  mkdir gatling-results
+                  "%GATLING_HOME%\\bin\\gatling.bat" ^
+                    -sf "%SIM_DIR%" ^
+                    -s %SIM_CLASS% ^
+                    -rf "%WORKSPACE%\\gatling-results" ^
+                    -rd "Max-limit ramp 1 to 200 RPS over 3 minutes (localhost)"
+                """
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'gatling-results/**', allowEmptyArchive: true
+        }
+        success {
+            echo "Gatling max-limit run finished. Open the index.html from the archived artifacts."
+        }
+        failure {
+            echo "Gatling max-limit run FAILED — check the console above."
+        }
+    }
+}
