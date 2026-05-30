@@ -1,0 +1,20 @@
+# Java / Tomcat
+*.class
+*.war
+target/
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
