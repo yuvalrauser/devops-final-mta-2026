@@ -29,4 +29,4 @@ Jenkins polls this Git repository every minute. When a new commit lands on
 files into Tomcat's `webapps/MeTA-final/`. Tomcat auto-redeploys.
 
 ## Team
-Bar Hacham, Gil Eliav, Omer Ovadia, Shlomo Mordechai, Nofar Sagas, Yuval Rauser
+Bar Hacham, Gil Eliav, Omer Ovadia, Shlomo Mordechai, Nofar Sagas, Yuval Rauser.
