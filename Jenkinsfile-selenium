@@ -23,7 +23,6 @@ pipeline {
 
     environment {
         SIDE_FILE = 'C:\\DevOps\\FinalProject\\selenium\\bmi-tests.side'
-        OUT_DIR   = 'selenium-results'
     }
 
     stages {
@@ -44,24 +43,18 @@ pipeline {
             steps {
                 bat """
                   @echo on
-                  if exist "%OUT_DIR%" rmdir /S /Q "%OUT_DIR%"
-                  mkdir "%OUT_DIR%"
-                  selenium-side-runner -c "browserName=MicrosoftEdge" --output-directory "%OUT_DIR%" --output-format junit "%SIDE_FILE%"
+                  selenium-side-runner -c "browserName=MicrosoftEdge" "%SIDE_FILE%"
                 """
             }
         }
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: 'selenium-results/**', allowEmptyArchive: true
-            junit testResults: 'selenium-results/**/*.xml', allowEmptyResults: true
-        }
         success {
             echo "Selenium suite passed — 5 validations OK"
         }
         failure {
-            echo "Selenium suite FAILED — check archived JUnit XML."
+            echo "Selenium suite FAILED — see selenium-side-runner output above."
         }
     }
 }
