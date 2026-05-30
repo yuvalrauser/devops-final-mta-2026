@@ -11,7 +11,7 @@ pipeline {
         SIM_DIR      = 'C:\\DevOps\\FinalProject\\gatling'
     }
     stages {
-        stage('Run Gatling stress (1000 RPS / 5 min)') {
+        stage('Run Gatling stress (400 RPS / 5 min)') {
             steps {
                 bat """
                   @echo on
@@ -21,7 +21,7 @@ pipeline {
                     -sf "%SIM_DIR%" ^
                     -s BmiStressSimulation ^
                     -rf "%WORKSPACE%\\gatling-results" ^
-                    -rd "Stress: constant 1000 RPS for 5 minutes (localhost)"
+                    -rd "Stress: constant 400 RPS for 5 minutes (localhost)"
                 """
             }
         }
