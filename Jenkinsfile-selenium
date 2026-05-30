@@ -3,7 +3,11 @@
 // regression test, not a continuous probe.
 //
 // Prerequisites on the agent (one-time, run manually):
-//   npm install -g selenium-side-runner chromedriver
+//   npm install -g selenium-side-runner edgedriver
+// (Edge instead of Chrome because of ongoing Chrome/ChromeDriver version-skew.
+// Microsoft Edge is built on Chromium, supports the same Selenium WebDriver
+// protocol, and the npm 'edgedriver' package auto-downloads the matching
+// msedgedriver for the local Edge version.)
 //
 // This job is triggered manually for the defense ("show me your tests run").
 // It does NOT poll for SCM changes — keep noise out of the build history.
@@ -30,7 +34,8 @@ pipeline {
                   @echo on
                   where node
                   where npm
-                  where selenium-side-runner || (echo selenium-side-runner missing - run: npm install -g selenium-side-runner chromedriver & exit /b 1)
+                  where selenium-side-runner || (echo selenium-side-runner missing - run: npm install -g selenium-side-runner edgedriver & exit /b 1)
+                  where edgedriver        || (echo edgedriver missing - run: npm install -g edgedriver & exit /b 1)
                 """
             }
         }
@@ -41,7 +46,7 @@ pipeline {
                   @echo on
                   if exist "%OUT_DIR%" rmdir /S /Q "%OUT_DIR%"
                   mkdir "%OUT_DIR%"
-                  selenium-side-runner --output-directory "%OUT_DIR%" --output-format junit "%SIDE_FILE%"
+                  selenium-side-runner -c "browserName=MicrosoftEdge" --output-directory "%OUT_DIR%" --output-format junit "%SIDE_FILE%"
                 """
             }
         }
