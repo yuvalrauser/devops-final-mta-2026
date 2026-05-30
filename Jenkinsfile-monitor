@@ -1,0 +1,68 @@
+// Jenkinsfile-monitor — pings the public ngrok URL every 5 minutes
+// to provide a second, in-house availability monitor alongside UptimeRobot.
+//
+// This job satisfies the assignment requirement:
+//   "trigger it via Jenkins job to work every 5 minutes"
+//
+// On failure, the Jenkins build is marked FAILED and stays visible in the
+// build history with a red ball — easy proof during the defense that the
+// monitor would notice an outage.
+
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        timeout(time: 1, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '50'))
+    }
+
+    triggers {
+        cron('H/5 * * * *')   // every 5 minutes (H stagger to avoid the top of every 5)
+    }
+
+    environment {
+        APP_URL = 'https://udder-wake-perch.ngrok-free.dev/MeTA-final/'
+    }
+
+    stages {
+
+        stage('HTTP probe') {
+            steps {
+                echo "Probing ${APP_URL}"
+                bat """
+                  @echo on
+                  curl --silent --show-error --fail --max-time 15 ^
+                       -H "ngrok-skip-browser-warning: any" ^
+                       -o response.html ^
+                       -w "HTTP %%{http_code} in %%{time_total}s, size %%{size_download} bytes\\n" ^
+                       "%APP_URL%"
+                """
+            }
+        }
+
+        stage('Content sanity check') {
+            steps {
+                echo "Looking for the expected page title in the response..."
+                bat """
+                  @echo on
+                  findstr /C:"MeTA BMI Calculator" response.html >NUL
+                  if errorlevel 1 (
+                    echo Expected text not found in response. Marking build as FAILED.
+                    exit /b 1
+                  )
+                  echo Page content is healthy.
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Monitor OK — site is UP at ${APP_URL}"
+        }
+        failure {
+            echo "Monitor FAILED — investigate ngrok tunnel + Tomcat."
+        }
+    }
+}
