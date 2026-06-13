@@ -11,7 +11,7 @@ the result into standard categories.
 
 ## UI elements (per assignment requirements)
 - **1 link**: "About BMI categories" → `about.jsp`
-- **1 button**: "Calculate BMI" (form submit)
+- **1 button**: "Calculate BMI" (form submit)         
 - **2 input text boxes**: height (cm), weight (kg)
 
 ## How it works
