@@ -152,7 +152,7 @@
     <main class="container">
         <header>
             <h1>MeTA BMI Calculator</h1>
-            <div class="subtitle">Employee Wellness Portal &middot; v1.1</div>
+            <div class="subtitle">Employee Wellness Portal &middot; v1.2 LIVE DEMO</div>
         </header>
 
         <form id="bmiForm" method="get" action="index.jsp">
