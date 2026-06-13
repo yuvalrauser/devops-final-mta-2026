@@ -17,11 +17,12 @@ pipeline {
                   @echo on
                   if exist gatling-results rmdir /S /Q gatling-results
                   mkdir gatling-results
-                  "%GATLING_HOME%\\bin\\gatling.bat" ^
+                  echo 1 | "%GATLING_HOME%\\bin\\gatling.bat" ^
                     -sf "%SIM_DIR%" ^
                     -s BmiLoadSimulation ^
                     -rf "%WORKSPACE%\\gatling-results" ^
                     -rd "Load: constant 100 RPS for 5 minutes (localhost)"
+                  if errorlevel 1 exit /b 1
                 """
             }
         }

@@ -15,13 +15,15 @@ pipeline {
             steps {
                 bat """
                   @echo on
+                  set JAVA_OPTS=-Xmx2g
                   if exist gatling-results rmdir /S /Q gatling-results
                   mkdir gatling-results
-                  "%GATLING_HOME%\\bin\\gatling.bat" ^
+                  echo 1 | "%GATLING_HOME%\\bin\\gatling.bat" ^
                     -sf "%SIM_DIR%" ^
                     -s BmiStressSimulation ^
                     -rf "%WORKSPACE%\\gatling-results" ^
                     -rd "Stress: constant 400 RPS for 5 minutes (localhost)"
+                  if errorlevel 1 exit /b 1
                 """
             }
         }
