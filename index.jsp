@@ -183,7 +183,7 @@
     <footer>
         <div>MTA 2026 - DevOps Final Project</div>
         <div class="team-names" id="teamNames">
-            Team: Bar Hacham, Gil Eliav, Omer Ovadia, Shlomo Mordechai, Nofar Sagas, Yuval Rauser
+            Team: Bar Haham, Gil Eliav, Omer Ovadia, Shlomo Mordechai, Nofar Sagas, Yuval Rauser
         </div>
     </footer>
 </body>
